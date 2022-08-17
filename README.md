@@ -14,9 +14,9 @@ An Amazon Aurora cluster (postgres flavour) houses their Operational Data Store.
 
 Connection details are:
 mycluster.cluster-123456789012.us-east-1.rds.amazonaws.com
-(us the default postgres port to connect)
-username: postgres
-password: 5Y67bg#r#
+(Please use the default postgres port to connect)
+username: `postgres`
+password: `5Y67bg#r#`
 
 Given the following data model:
 
@@ -40,7 +40,7 @@ Given the following data model:
    1. Create an SFTP server on EC2 (using Terraform), which makes the contents of the S3 bucket containing the extracts available to the external system
    2. Build in some form of scheduling and an orchestration layer which includes notifications upon job failure to a support email address (data-support@mybigbank.co.za)
    3. Ensure idempotency of the ETL system
-   4. Keep passwords and connection details secure
+   4. Keep passwords and connection details secure. In fact, passwords should probably be rotated and S3 data should probably be encrypted...
    5. Add comments and logging to your code
    6. Documentation is always nice, especially if you're good at drawing architectual diagrams. Please add any documentation you create to a separate README file.
    7. Anything else we did not specify in the task outline, but which you think will add value to your solution (keep in mind templatisability for reuse of your code by other team members)
