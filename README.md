@@ -32,6 +32,7 @@ Given the following data model:
 * A Glue Catalog Database to persist the metadata
 * A Glue Job which will read data from this datasource and write it to S3
 * An S3 bucket to house the transformed dataset
+* Any other terraform resources you might require
 
 2. Write a Glue ETL script (use the file `main.tf`), which calculates the moving average of loan amounts taken out over the last three months, per branch. Create a separate file for each bank in the group. Files need to be partitioned by Bank Name, Year and Month and the filename needs to be of the format BankName_YYYYMMDD.csv
    
