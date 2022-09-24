@@ -327,3 +327,4 @@ tags
 
 # End of https://www.toptal.com/developers/gitignore/api/pycharm+all,python,linux,terraform,vim
 
+.terraform.lock.hcl
