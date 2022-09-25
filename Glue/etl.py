@@ -82,7 +82,10 @@ rolling_avg_df = spark.sql(
 rolling_avg_partitioned_df = rolling_avg_df.repartition("bank_name", "loan_year_month")
 
 # write to s3 bucket
-rolling_avg_partitioned_df.write.parquet(f"s3a://{TARGET_BUCKET}/bankloans.parquet",
-                                         partitionBy=["bank_name", "loan_year_month"], mode="overwrite")
+# (please see https://stackoverflow.com/questions/71344340/pyspark-write-a-dataframe-to-csv-files-in-s3-with-a-custom-name)
+# can't use pyspark alone to rename these files according to specification, name isn't determinable.
+rolling_avg_partitioned_df.write.partitionBy("bank_name", "loan_year_month").csv(
+    f"s3a://{TARGET_BUCKET}/bankloans/", header=True, mode="overwrite"
+)
 
 job.commit()
