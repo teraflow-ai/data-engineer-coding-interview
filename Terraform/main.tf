@@ -75,18 +75,20 @@ resource "aws_s3_bucket" "crawlresults" {
 }
 
 # secrets management
-resource "aws_secretsmanager_secret" "bank_db_password_secret" {
-  name = "bank_db_password_secret"
+resource "aws_secretsmanager_secret" "bank_db_user_name_secret" {
+  name                    = "bank_db_user_name_secret"
+  recovery_window_in_days = 0
 }
-resource "aws_secretsmanager_secret" "bank_db_username_secret" {
-  name = "bank_db_username_secret"
+resource "aws_secretsmanager_secret" "bank_db_pwd_secret" {
+  name                    = "bank_db_pwd_secret"
+  recovery_window_in_days = 0
 }
 resource "aws_secretsmanager_secret_version" "bank_db_username" {
-  secret_id     = aws_secretsmanager_secret.bank_db_username_secret.id
+  secret_id     = aws_secretsmanager_secret.bank_db_user_name_secret.id
   secret_string = var.db_username
 }
 resource "aws_secretsmanager_secret_version" "bank_db_password" {
-  secret_id     = aws_secretsmanager_secret.bank_db_password_secret.id
+  secret_id     = aws_secretsmanager_secret.bank_db_pwd_secret.id
   secret_string = var.db_password
 }
 
@@ -99,12 +101,18 @@ resource "aws_glue_connection" "bank_conn" {
   name = "bank_conn"
 }
 
-# upload script to s3 bucket so glue job can read it
-resource "aws_s3_object" "object" {
+# upload scripts to s3 bucket so glue job can read it
+resource "aws_s3_object" "write_tables_script" {
+  bucket = aws_s3_bucket.crawlresults.bucket
+  key    = "write_tables_to_s3.py"
+  source = "../Glue/write_tables_to_s3.py"
+}
+
+
+resource "aws_s3_object" "etl_script" {
   bucket = aws_s3_bucket.crawlresults.bucket
   key    = "etl.py"
   source = "../Glue/etl.py"
-
 }
 
 # logging
@@ -146,23 +154,68 @@ resource "aws_glue_crawler" "bank_crawler" {
 ##################
 # Glue Job       #
 ##################
-resource "aws_glue_job" "read_tables_into_s3" {
-  name        = "read_tables_into_s3"
+resource "aws_glue_job" "write_tables_into_s3" {
+  name        = "write_tables_into_s3"
   role_arn    = aws_iam_role.glue-role.arn
-  description = "Reads each table of bank database into target s3 bucket"
-  connections = [aws_glue_connection.bank_conn.arn]
+  description = "Writes each table of bank database into target s3 bucket"
+  connections = [aws_glue_connection.bank_conn.id]
 
 
   command {
-    script_location = "s3//${aws_s3_bucket.crawlresults.bucket}/etl.py"
+    script_location = "s3://${aws_s3_object.write_tables_script.bucket}/${aws_s3_object.write_tables_script.key}"
   }
   default_arguments = {
-    "--JOB_NAME"                         = "load_tables_into_s3_job"
-    "--CATALOG_DATABASE"                 = aws_glue_catalog_database.bank_db.name
-    "--CATALOG_TABLE"                    = "Loans"
-    "--TARGET_BUCKET"                    = aws_s3_bucket.crawlresults.bucket
-    "--continuous-log-logGroup"          = aws_cloudwatch_log_group.banklogger.name
-    "--enable-continuous-cloudwatch-log" = "true"
-    "--enable-continuous-log-filter"     = "true"
+    "--JOB_NAME"         = "write_tables_into_s3_job"
+    "--CATALOG_DATABASE" = aws_glue_catalog_database.bank_db.name
+    "--CATALOG_TABLE"    = "Loans"
+    "--TARGET_BUCKET"    = aws_s3_bucket.crawlresults.bucket
   }
+}
+
+resource "aws_glue_job" "transformation_job" {
+  name        = "transformation_job"
+  role_arn    = aws_iam_role.glue-role.arn
+  description = "Calculate moving average of loan amounts"
+  connections = [aws_glue_connection.bank_conn.id]
+
+
+  command {
+    script_location = "s3://${aws_s3_object.write_tables_script.bucket}/${aws_s3_object.etl_script.key}"
+  }
+  default_arguments = {
+    "--JOB_NAME"         = "transformation_job"
+    "--CATALOG_DATABASE" = aws_glue_catalog_database.bank_db.name
+    "--TARGET_BUCKET"    = aws_s3_bucket.crawlresults.bucket
+  }
+}
+
+# trigger all jobs once
+resource "aws_glue_trigger" "trigger_write_tables_into_s3" {
+  name = "trigger_write_tables_into_s3"
+  type = "ON_DEMAND"
+
+  actions {
+    job_name = aws_glue_job.write_tables_into_s3.name
+  }
+}
+
+resource "aws_glue_trigger" "trigger_transformation_job" {
+  name = "trigger_transformation_job"
+  type = "ON_DEMAND"
+
+  actions {
+    job_name = aws_glue_job.transformation_job.name
+  }
+}
+
+# SFTP server on results
+module "sftp" {
+  source        = "clouddrove/sftp/aws"
+  version       = "1.0.1"
+  name          = "sftpserver"
+  key_path      = "~/.ssh/id_rsa_sftp_server_teraflow.pub"
+  user_name     = "ftp-user-teraflow"
+  enable_sftp   = true
+  s3_bucket_id  = aws_s3_bucket.crawlresults.bucket
+  endpoint_type = "PRIVATE"
 }
