@@ -2,7 +2,7 @@
 
 In GitHub, please create a fork of this repo, using your name and surname as the feature branch name.
 
-Submit a pull request into the parent repository once you're done coding.
+Submit a pull request into the `main` branch of the parent repository once you're done coding.
 
 Please note that the Aurora instance details don't point to a real instance and that this is mainly a theoretical exercise. We don't expect you to submit proof that you ran your code in a real AWS environment. We mainly want to assess the way you think and problem solve.
 
