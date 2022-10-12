@@ -4,6 +4,8 @@ In Git, please create a fork of this repo, using your name and surname as the fe
 
 Submit a pull request into the parent repository once you're done coding.
 
+Please note that the Aurora instance details don't point to a real instance and that this is mainly a theoretical exercise. We don't expect you to submit proof that you ran your code in a real AWS environment. We mainly want to assess the way you think and problem solve.
+
 # Problem Statement
 
 You are consulting on a Banking group's Data Engineering project and need to create a monthly extract of data from their Aurora cluster into a CSV file on S3, to be consumed by an external system.
