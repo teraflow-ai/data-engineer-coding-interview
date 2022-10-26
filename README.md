@@ -6,7 +6,7 @@ Submit a pull request from your own fork to this repo, to super-charge your Data
 
 ![](ethereum.jpg)
 
-You are consulting on Cryptocurrency Trading start-up _CryptoDudez_'s Data Engineering project.
+You are consulting on Cryptocurrency Trading start-up _*CryptoDudez*_'s Data Engineering project.
 
 They would like to automate crypto trades by making use of an AI system trained on a information from social media, news sites and live cryptocurrency-, fiat currency- and stock exchange rates.
 
