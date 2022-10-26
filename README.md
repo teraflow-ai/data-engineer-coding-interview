@@ -4,6 +4,8 @@ Submit a pull request from your own fork to this repo, to super-charge your Data
 
 ## The brief
 
+![ethereum.jpg]
+
 You are consulting on a Cryptocurrency Trading start-up's Data Engineering project.
 
 They would like to automate crypto trades by making use of an AI system trained on a information from social media, news sites and live cryptocurrency-, fiat currency- and stock exchange rates.
