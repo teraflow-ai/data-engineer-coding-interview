@@ -1,3 +1,4 @@
+![](teraflow.webp)
 # Prove that you are a Super Charged Data Engineer!
 
 Submit a pull request from your own fork to this repo, to super-charge your Data Engineer job application at Teraflow.
