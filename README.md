@@ -4,7 +4,7 @@ Submit a pull request from your own fork to this repo, to super-charge your Data
 
 ## The brief
 
-![ethereum.jpg]
+![](ethereum.jpg)
 
 You are consulting on a Cryptocurrency Trading start-up's Data Engineering project.
 
