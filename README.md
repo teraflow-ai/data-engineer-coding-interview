@@ -4,9 +4,9 @@ Submit a pull request from your own fork to this repo, to super-charge your Data
 
 ## The brief
 
-![](ethereum.jpg)
-
 You are consulting on new Cryptocurrency Trading start-up __*CryptoDudez*__'s Machine Learning project.
+
+![](ethereum.jpg)
 
 They would like to automate their Ethereum trades by making use of machine learning on a scalable and cost-effective cloud solution on either AWS or GCP and require your help in scoping out the solution architecture, as well as building a minimal proof of concept solution within 7 days.
 
