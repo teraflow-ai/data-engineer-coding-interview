@@ -25,4 +25,8 @@ __*CryptoDudez*__ would like the cryptocurrency data, as well as any additional 
 
 Upon landing in the data lake, an automated process should be kicked off which runs various data validation checks, as well as performs some basic transformations, such as converting data to parquet format.
 
+After this basic ingestion process, the following features need to be created to train a machine learning model:
+
+
+
 We usually scope out our project requirements in a Sprint Zero phase, where we usually come up with some solution diagrams, we'd like you to draw up an architectural diagram for your solution before you start.
