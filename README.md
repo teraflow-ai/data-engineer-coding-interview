@@ -13,16 +13,16 @@ They would like to automate their Ethereum trades by making use of machine learn
 
 ## The data
 
-__*CryptoDudez*__ have made use of some interns to gather historical crypto prices and have provided this to you in the archive: `cryptocurrency_historical_prices.zip`
+__*CryptoDudez*__ have made use of some interns to gather historical crypto prices and have provided this to you in the archive: `cryptocurrency_historical_prices.zip`.
 
-They have also made some of Elon Musk's historical tweets available in the archive `elon_musk_tweets.zip`
+They have also gathered some of Elon Musk's historical tweets in the archive `elon_musk_tweets.zip` and stock market tickers in the archive `stock_prices_2020_2021.zip`
 
-They would like to make use of additional datasources, such as social media posts, information from news sites, as well as trading prices from stock exchanges and the value of major fiat currencies, in order to train an ML model which will predict whether to buy, sell or [HODL](https://www.nerdwallet.com/article/investing/hodl-a-typo-takes-hold-as-a-sound-cryptocurrency-strategy) their current Ethereum stockpile.
+Their ultimate goal is to train an ML model which will predict whether to buy, sell or [HODL](https://www.nerdwallet.com/article/investing/hodl-a-typo-takes-hold-as-a-sound-cryptocurrency-strategy) their current Ethereum stockpile. But before any fancy Machine Learning work can commence, they need some serious Data Engineering know-how to get their environment ready to enable this AI use-case.
 
 ## The requirements
 
 __*CryptoDudez*__ would like the cryptocurrency data, as well as any additional datasources to be stored in their raw form on a Data Lake layer.
 
-Additional datasources need to be web-scraped and joined to the cryptocurrency data, based on the timestamp.
+Upon landing in the data lake, an automated process should be kicked off which runs various data validation checks, as well as performs some basic transformations, such as converting data to parquet format.
 
 We usually scope out our project requirements in a Sprint Zero phase, where we usually come up with some solution diagrams, we'd like you to draw up an architectural diagram for your solution before you start.
