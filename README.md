@@ -21,12 +21,20 @@ Their ultimate goal is to train an ML model which will predict whether to buy, s
 
 ## The requirements
 
+### Data Lake
+
 __*CryptoDudez*__ would like the cryptocurrency data, as well as any additional datasources to be stored in their raw form on a Data Lake layer.
 
-Upon landing in the data lake, an automated process should be kicked off which runs various data validation checks, as well as performs some basic transformations, such as converting data to parquet format.
+Upon landing in the data lake, an automated process should be kicked off which catalogs the landed data's location, the column names and datatypes contained therein. 
 
-After this basic ingestion process, the following features need to be created to train a machine learning model:
+Once the structure and location of the data has been established and persisted, an additional process needs to runs various data validation checks (null checks, non-conformant schemas, unprocessable rows, corrupt data) and lastly, the data needs to be converted to parquet format. Any rows or files that were not processable should be stored in a seperate location for later review.
 
+### Feature Store
 
+After this basic ingestion process has concluded, a number of "features" need to be calculated to train a machine learning model. These features need to be calculated in a scalable fashion (assume that the size of the input data has the potential to be many Terabytes in size)
 
-We usually scope out our project requirements in a Sprint Zero phase, where we usually come up with some solution diagrams, we'd like you to draw up an architectural diagram for your solution before you start.
+## Your final submission should include:
+
+* At Teraflow, we usually scope out our project requirements in a "Sprint Zero" phase, where we would come up with some solution diagrams before we start building, to simulate this we'd like you to draw up an architectural diagram for your solution as part of your submission.
+* Infrastructure as Code to deploy the various cloud resources needed to make your solution work
+* The code assets which would allow this solution to fulfil the minimum viable product requirements
