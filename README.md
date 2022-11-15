@@ -51,6 +51,14 @@ Some of the features requested include:
 - Some form of numeric encoding/ representation of the tweets, with emojis, stopwords, @mentions and other non-informative or non-linguistic elements removed
 - A sensible representation of the cryptocurrency and stockmarket data, which allows for all of these tickers to be tied back to (used as predictors for) the price of Ethereum
 
+Please note that the calculation of the features should be an event-driven process, triggered by ingestion into the datalake.
+
+It is up to you to recommend the persistence layer of the feature store.
+
+### Added extras
+
+Once you have implemented the basics, you might want to spend the time you have left to either train a basic machine learning model to predict Ethereum prices making use of this (and potentiall other) data, or alternatively you might wish to templatise your code into a reusable Python package, or build some ML Feature Store capabilities, such as data-drift detection, dataset metadata; another option could be to indicate how a machine learning model trained on this data would be deployed behind an API and/ or how such a model could be retrained... whatever you feel will impress your client the most, given the tight deadline and the areas of expertise you are personally more comfortable with.
+
 ## Your final submission should include:
 
 * At Teraflow, we usually scope out our project requirements in a "Sprint Zero" phase, where we would come up with some solution diagrams before we start building, to simulate this we'd like you to draw up an architectural diagram for your solution as part of your submission.
