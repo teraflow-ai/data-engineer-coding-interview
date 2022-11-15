@@ -53,7 +53,7 @@ Some of the features requested include:
 
 Please note that the calculation of the features should be an event-driven process, triggered by ingestion into the datalake.
 
-It is up to you to recommend the persistence layer of the feature store.
+It is up to you to recommend the persistence-, consumption- and governance layers of the feature store.
 
 ### Added extras
 
