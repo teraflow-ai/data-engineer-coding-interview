@@ -13,9 +13,17 @@ They would like to automate their Ethereum trades by making use of machine learn
 
 ## The data
 
-__*CryptoDudez*__ have made use of some interns to gather historical crypto prices and have provided this to you in the archive: `cryptocurrency_historical_prices.zip`.
+__*CryptoDudez*__ have made use of some interns to gather historical crypto prices and have provided this to you in the archive: `cryptocurrency_historical_prices.zip`. 
 
-They have also gathered some of Elon Musk's historical tweets in the archive `elon_musk_tweets.zip` and stock market tickers in the archive `stock_prices_2020_2021.zip`
+![](coinBitCoin.png)
+
+They have also gathered some of Elon Musk's historical tweets in the archive `elon_musk_tweets.zip` 
+
+![](elon.png)
+
+And stock market tickers in the archive `stock_prices_2020_2021.zip`
+
+![](stockprices.png)
 
 Their ultimate goal is to train an ML model which will predict whether to buy, sell or [HODL](https://www.nerdwallet.com/article/investing/hodl-a-typo-takes-hold-as-a-sound-cryptocurrency-strategy) their current Ethereum stockpile. But before any fancy Machine Learning work can commence, they need some serious Data Engineering know-how to get their environment ready to enable this AI use-case.
 
