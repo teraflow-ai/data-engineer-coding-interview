@@ -1,50 +1,48 @@
-# data-engineer-coding-interview
+![](teraflow.webp)
+# Prove that you are a Super Charged Data Engineer!
 
-In GitHub, please create a fork of this repo, using your name and surname as the feature branch name.
+Submit a pull request from your own fork to this repo, to super-charge your Data Engineer job application at Teraflow.
 
-Submit a pull request into the `main` branch of the parent repository once you're done coding.
+## The brief
 
-Please note that the Aurora instance details don't point to a real instance and that this is mainly a theoretical exercise. We don't expect you to submit proof that you ran your code in a real AWS environment. We mainly want to assess the way you think and problem solve.
+You are consulting on new Cryptocurrency Trading start-up __*CryptoDudez*__'s Machine Learning project.
 
-# Problem Statement
+![](ethereum.jpg)
 
-You are consulting on a Banking group's Data Engineering project and need to create a monthly extract of data from their Aurora cluster into a CSV file on S3, to be consumed by an external system.
+They would like to automate their Ethereum trades by making use of machine learning on a scalable and cost-effective cloud solution on either AWS or GCP and require your help in scoping out the solution architecture, as well as building a minimal proof of concept solution within 7 days.
 
-There are three different banks in the group.
+## The data
 
-An Amazon Aurora cluster (postgres flavour) houses their Operational Data Store.
+__*CryptoDudez*__ have made use of some interns to gather historical crypto prices and have provided this to you in the archive: `cryptocurrency_historical_prices.zip`. 
 
-Connection details are:
-mycluster.cluster-123456789012.us-east-1.rds.amazonaws.com
-(Please use the default postgres port to connect)
-username: `postgres`
-password: `5Y67bg#r#`
+![](coinBitCoin.png)
 
-Given the following data model:
+They have also gathered some of Elon Musk's historical tweets in the archive `elon_musk_tweets.zip` 
 
-![](DataModel_ERD.png)
+![](elon.png)
 
-# Perform the following tasks
+And stock market tickers in the archive `stock_prices_2020_2021.zip`
 
-1. Write code to deploy the following resources via Terraform:
+![](stockprices.png)
 
-(Put this code in the file `Terraform/main.tf`)
+Their ultimate goal is to train an ML model which will predict whether to buy, sell or [HODL](https://www.nerdwallet.com/article/investing/hodl-a-typo-takes-hold-as-a-sound-cryptocurrency-strategy) their current Ethereum stockpile. But before any fancy Machine Learning work can commence, they need some serious Data Engineering know-how to get their environment ready to enable this AI use-case.
 
-* A Glue Crawler to crawl this datasource
-* A Glue Catalog Database to persist the metadata
-* A Glue Job which will read data from this datasource and write it to S3
-* An S3 bucket to house the transformed dataset
-* Any other terraform resources you might require
+## The requirements
 
-2. Write a Glue ETL script (use the file `Glue/etl.py`), containing scaleable business logic to calculate the moving average of loan amounts taken out over the last three months, per branch.
-   1. Create a separate monthly output file for each bank in the group.
-   2. Files need to be partitioned by Bank Name, Year and Month and the filename needs to be of the format BankName_YYYYMMDD.csv
-   
-3. Remember, bonus points can be earned, if you really want to impress your client, by adding some of the following:
-   1. Create an SFTP server on EC2 (using Terraform), which makes the contents of the S3 bucket containing the extracts available to the external system
-   2. Build in some form of scheduling and an orchestration layer which includes notifications upon job failure to a support email address (data-support@mybigbank.co.za)
-   3. Ensure idempotency of the ETL system
-   4. Keep passwords and connection details secure. In fact, passwords should probably be rotated and S3 data should probably be encrypted...
-   5. Add comments and logging to your code
-   6. Documentation is always nice, especially if you're good at drawing architectual diagrams. Please add any documentation you create to a separate README file.
-   7. Anything else we did not specify in the task outline, but which you think will add value to your solution (keep in mind templatisability for reuse of your code by other team members)
+### Data Lake
+
+__*CryptoDudez*__ would like the cryptocurrency data, as well as any additional datasources to be stored in their raw form on a Data Lake layer.
+
+Upon landing in the data lake, an automated process should be kicked off which catalogs the landed data's location, the column names and datatypes contained therein. 
+
+Once the structure and location of the data has been established and persisted, an additional process needs to runs various data validation checks (null checks, non-conformant schemas, unprocessable rows, corrupt data) and lastly, the data needs to be converted to parquet format. Any rows or files that were not processable should be stored in a seperate location for later review.
+
+### Feature Store
+
+After this basic ingestion process has concluded, a number of "features" need to be calculated to train a machine learning model. These features need to be calculated in a scalable fashion (assume that the size of the input data has the potential to be many Terabytes in size)
+
+## Your final submission should include:
+
+* At Teraflow, we usually scope out our project requirements in a "Sprint Zero" phase, where we would come up with some solution diagrams before we start building, to simulate this we'd like you to draw up an architectural diagram for your solution as part of your submission.
+* Infrastructure as Code to deploy the various cloud resources needed to make your solution work
+* The code assets which would allow this solution to fulfil the minimum viable product requirements
