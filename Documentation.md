@@ -11,12 +11,12 @@ Architecture :
 
 ![](architecture.png)
 
-# How it can be improved
+## How it can be improved
 - Complete setup of SFTP S3 mount server and provide external users with simple GUI
 - Modify role permissions for least privilege
 - Improve templatisability
 - Improve idempotency:
--- Current Job processes all data in DB at once. Job should be modified for incremental loads
--- Jos should keep track of previous runs to avoid data reprocessing
+* Current Job processes all data in DB at once. Job should be modified for incremental loads
+* Jos should keep track of previous runs to avoid data reprocessing
 - Use secrets manager to store and rotate RDS password
 - Remove part files after merging and renaming files
