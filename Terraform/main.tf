@@ -13,6 +13,47 @@ provider "aws" {
   region = "us-east-1"
 }
 
+
+############################
+# Glue Catalog             #
+############################
+resource "aws_iam_role" "banking_role" {
+  name = "big-bank-engineer"
+
+  assume_role_policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Action = "sts:AssumeRole"
+        Effect = "Allow"
+        Sid    = ""
+        Principal = {
+          Service = [
+            "vpc-flow-logs.amazonaws.com",
+            "glue.amazonaws.com",
+            "states.amazonaws.com"
+          ]
+        }
+      },
+    ]
+  })
+
+  inline_policy {
+    name = "my_inline_policy"
+
+    policy = jsonencode({
+      Version = "2012-10-17"
+      Statement = [
+        {
+          Action   = "*"
+          Effect   = "Allow"
+          Resource = "*"
+        },
+      ]
+    })
+  }
+}
+
 ##################
 # Glue Catalog   #
 ##################
@@ -26,8 +67,8 @@ resource "aws_glue_catalog_database" "aws_glue_catalog_database" {
 #################################
 resource "aws_glue_connection" "banking_connection" {
   connection_properties = {
-    JDBC_CONNECTION_URL = "jdbc:postgresql://aurora-pgress.cluster-cm6elvieiaiz.us-east-1.rds.amazonaws.com:5432/finance"
-    PASSWORD            = "2486Okebe."
+    JDBC_CONNECTION_URL = "jdbc:postgresql://mycluster.cluster-123456789012.us-east-1.rds.amazonaws.com:5432/finance"
+    PASSWORD            = "5Y67bg#r#"
     USERNAME            = "postgres"
   }
 
@@ -43,7 +84,7 @@ resource "aws_glue_connection" "banking_connection" {
 resource "aws_glue_crawler" "banking_crawler" {
   database_name = "banking_group"
   name          = "banking_crawler"
-  role          = "arn:aws:iam::370310570296:role/big-boss-man"
+  role          = aws_iam_role.banking_role.arn
 
   jdbc_target {
     connection_name = aws_glue_connection.banking_connection.name
@@ -57,18 +98,19 @@ resource "aws_glue_crawler" "banking_crawler" {
 ##################
 resource "aws_glue_job" "banking_job" {
   name              = "banking_job"
-  role_arn          = "arn:aws:iam::370310570296:role/big-boss-man"
+  role_arn          = aws_iam_role.banking_role.arn
   glue_version      = "3.0"
   worker_type       = "G.1X"
   number_of_workers = 3
 
   command {
-    script_location = "s3://aws-glue-assets-370310570296-us-east-1/scripts/test-delete.py"
+    script_location = "s3://aws-glue-assets-123456789-us-east-1/scripts/test-delete.py"
   }
+
+  connections =  [aws_glue_connection.banking_connection.name]
 
   default_arguments = {
     "--additional-python-modules"        = "s3-concat"
-    "--job-bookmark-option"              = "job-bookmark-enable"
     "--enable-continuous-cloudwatch-log" = "true"
   }
 }
@@ -90,7 +132,7 @@ resource "aws_s3_bucket_server_side_encryption_configuration" "banking_output_en
 
   rule {
     apply_server_side_encryption_by_default {
-      sse_algorithm     = "AES256"
+      sse_algorithm = "AES256"
     }
   }
 }
@@ -127,7 +169,7 @@ resource "aws_sns_topic_subscription" "banking_job_failure" {
 #############################################################
 resource "aws_sfn_state_machine" "banking_state_machine" {
   name     = "banking-state-machine"
-  role_arn = "arn:aws:iam::370310570296:role/service-role/StepFunctions-test-delete-glue-role-d6b9a3df"
+  role_arn = aws_iam_role.banking_role.arn
 
   definition = <<EOF
 {
@@ -138,7 +180,7 @@ resource "aws_sfn_state_machine" "banking_state_machine" {
       "Type": "Task",
       "Resource": "arn:aws:states:::glue:startJobRun.sync",
       "Parameters": {
-        "JobName": "test-delete"
+        "JobName": "${aws_glue_job.banking_job.name}"
       },
       "Comment": "Run Glue Job",
       "Next": "Choice"
@@ -161,7 +203,7 @@ resource "aws_sfn_state_machine" "banking_state_machine" {
       "Resource": "arn:aws:states:::sns:publish",
       "Parameters": {
         "Message.$": "$",
-        "TopicArn": "arn:aws:sns:us-east-1:370310570296:amplify_codecommit_topic"
+        "TopicArn": "${aws_sns_topic.banking_job_update.arn}"
       },
       "End": true
     },

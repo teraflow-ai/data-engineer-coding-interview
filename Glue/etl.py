@@ -16,12 +16,11 @@ glueContext = GlueContext(sc)
 spark = glueContext.spark_session
 job = Job(glueContext)
 # Create source DynamicFrames from the Glue Data Catalog tables
-src_loan = glueContext.create_dynamic_frame.from_catalog(database = "aurora", table_name = "finance_public_loans", transformation_ctx = "src_loan")
-src_account = glueContext.create_dynamic_frame.from_catalog(database = "aurora", table_name = "finance_public_account", transformation_ctx = "src_account")
-src_client = glueContext.create_dynamic_frame.from_catalog(database = "aurora", table_name = "finance_public_client", transformation_ctx = "src_client")
-src_branch = glueContext.create_dynamic_frame.from_catalog(database = "aurora", table_name = "finance_public_branch", transformation_ctx = "src_branch")
-src_bank =  glueContext.create_dynamic_frame.from_catalog(database = "aurora", table_name = "finance_public_bank", transformation_ctx = "src_bank")
-
+src_loan = glueContext.create_dynamic_frame.from_catalog(database = "banking_group", table_name = "finance_public_loans", transformation_ctx = "src_loan")
+src_account = glueContext.create_dynamic_frame.from_catalog(database = "banking_group", table_name = "finance_public_account", transformation_ctx = "src_account")
+src_client = glueContext.create_dynamic_frame.from_catalog(database = "banking_group", table_name = "finance_public_client", transformation_ctx = "src_client")
+src_branch = glueContext.create_dynamic_frame.from_catalog(database = "banking_group", table_name = "finance_public_branch", transformation_ctx = "src_branch")
+src_bank =  glueContext.create_dynamic_frame.from_catalog(database = "banking_group", table_name = "finance_public_bank", transformation_ctx = "src_bank")
 
 # Join the Bank and Branch
 bank_branch = src_bank.join(paths1=["idBank"], paths2=["Bank_idBank"], frame2=src_branch)
@@ -40,8 +39,6 @@ fn_bank_loans = bank_loans.apply_mapping(
         ("loan_date", "Date", "loan_date", "Date"),
     ]
 )
-fn_bank_loans.printSchema()
-fn_bank_loans.count()
 # Calculate the moving average using spark sql
 SqlQuery = """
 select BankName, idBranch, year, month, 
@@ -59,19 +56,18 @@ from
 """
 fn_bank_loans.toDF().createOrReplaceTempView('myDataSource')
 results = spark.sql(SqlQuery)
-#results.count()
-#results.printSchema()
 ## Write Spark Dataframe results to S3
 results.count()
 results.write.format('csv') \
+             .option("header",True) \
              .mode("append") \
              .partitionBy("BankName", "year", "month") \
-             .save(path="s3://aws-edokemwa-csv/test-data/")
+             .save(path="s3://my-edokemwa-tf-test-bucket/")
 
 # Loop through dest to merge and rename file
-bucket = 'aws-edokemwa-csv'
+bucket = 'my-edokemwa-tf-test-bucket'
 for row in results.select("BankName", "year", "month").distinct().collect():
-    path_to_concat = 'test-data/BankName='+row['BankName']+'/year='+row['year']+'/month='+row['month']+'/'
+    path_to_concat = 'BankName='+row['BankName']+'/year='+row['year']+'/month='+row['month']+'/'
     concatenated_file = path_to_concat+row['BankName']+'_'+row['year']+row['month']+'01.csv'
     min_file_size = None
     # Init the concat_job
