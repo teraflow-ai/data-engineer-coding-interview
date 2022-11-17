@@ -55,9 +55,14 @@ Please note that the calculation of the features should be an event-driven proce
 
 It is up to you to recommend the persistence-, consumption- and governance layers of the feature store.
 
+### Data Analysis
+
+As an example use-case, consider the stock prices for Dogecoin and Elon Musk's tweets in 2019. Connstruct a feature in your feature store that looks at the frequency of the term "dogecoin" in Elon's tweets over a window period of 1 day. Compare it to the stock price of dogecoin over the duration of 2019 and investigate any observable trend/s. Present/use your findings as you see fit.
+
+
 ### Added extras
 
-Once you have implemented the basics, you might want to spend the time you have left to either train a basic machine learning model to predict Ethereum prices making use of this (and potentiall other) data, or alternatively you might wish to templatise your code into a reusable Python package, or build some ML Feature Store capabilities, such as data-drift detection, dataset metadata; another option could be to indicate how a machine learning model trained on this data would be deployed behind an API and/ or how such a model could be retrained... whatever you feel will impress your client the most, given the tight deadline and the areas of expertise you are personally more comfortable with.
+For bonus credit, you can spend what time you have left (or are willing to spend) to conduct further investigations: Can you find more trends in the data? Are there other meaningful correlations? Can you train a basic machine learning model to predict crypto prices making use of the data (for example for the use-case explored in the data analysis section), or alternatively you might wish to templatise your code into a reusable Python package, or build some ML Feature Store capabilities, such as data-drift detection, dataset metadata; another option could be to indicate how a machine learning model trained on this data would be deployed behind an API and/ or how such a model could be retrained... whatever you feel will impress your client the most, given the tight deadline and the areas of expertise you are personally more comfortable with.
 
 ## Your final submission should include:
 
