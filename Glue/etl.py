@@ -48,7 +48,7 @@ branch_view =branch.createorReplaceTempView("branch")
 # Join tables and Calculate the average
 sqlquery = """        
 select Name, idBranch, extract(year from loan_date) year, extract(month from loan_date) month, 
-          amount over (partition by Name, idBranch order by year, month ) average
+          avg(amount) over (partition by Name,idBranch, year, month ) average
 from (select br.idBranch,b.Name,c.Name as client_name,a.idAccount,l.amount,l.loan_date 
         from bank_data.bank b
         join bank_data.branch br 
