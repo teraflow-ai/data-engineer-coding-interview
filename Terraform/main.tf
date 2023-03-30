@@ -1,6 +1,9 @@
 ##################
 # Glue Catalog   #
 ##################
+resource "aws_glue_catalog_database" "banks_catalog_database" {
+  name = "Banks"
+}
 
 ##################
 # Glue Crawler   #
