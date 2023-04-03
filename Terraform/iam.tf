@@ -68,7 +68,7 @@ resource "aws_iam_role" "glue-service-linked-role" {
   })
 }
 
-resource "aws_iam_policy_attachment" "glue-service-linked-role-policy-attach" {
+resource "aws_iam_policy_attachment" "glue_service_linked_role_policy_attach" {
   name       = aws_iam_role.glue-service-linked-role.name
   policy_arn = aws_iam_policy.glue-service-linked-role-policy.arn
 }
