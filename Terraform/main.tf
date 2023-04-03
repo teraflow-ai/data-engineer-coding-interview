@@ -2,7 +2,7 @@
 # Glue Catalog   #
 ##################
 resource "aws_glue_catalog_database" "banks_catalog_database" {
-  name = "banks"
+  name = var.glue_catalog_db_name
 }
 
 ##################
@@ -10,12 +10,11 @@ resource "aws_glue_catalog_database" "banks_catalog_database" {
 ##################
 resource "aws_glue_crawler" "monthly_loan_amounts" {
   database_name = var.database_name
-  name          = "monthly_loan_amounts"
+  name          = var.glue_crawler_name
   role          = aws_iam_role.glue_rds_service_role.arn
 
   jdbc_target {
-#    connection_name = aws_glue_connection.rds_jdbc_connection.name
-    connection_name = "test"
+    connection_name = aws_glue_connection.rds_jdbc_connection.name
     path            = var.jdbc_target_path
   }
 }
@@ -23,21 +22,24 @@ resource "aws_glue_crawler" "monthly_loan_amounts" {
 ##########################
 # Glue JDBC Connection   #
 ##########################
-#resource "aws_glue_connection" "rds_jdbc_connection" {
-#  connection_properties = {
-#    JDBC_CONNECTION_URL = "jdbc:mysql://${data.aws_rds_cluster.clusterName.endpoint}/${var.database_name}"
-#    PASSWORD            = "examplepassword"
-#    USERNAME            = "exampleusername"
-#  }
-#
-#  name = "rds_jdbc_connection"
-#
-#  physical_connection_requirements {
-#    availability_zone      = data.aws_vpc.vpc_banks.s#aws_subnet.example.availability_zone
-#    security_group_id_list = [aws_security_group.example.id]
-#    subnet_id              = aws_subnet.example.id
-#  }
-#}
+resource "aws_glue_connection" "rds_jdbc_connection" {
+  connection_properties = {
+    JDBC_CONNECTION_URL = local.rds_jdbc_url
+    PASSWORD            = local.rds_pwd
+    USERNAME            = local.rds_username
+  }
+
+  description = "Glue JDBC connection"
+
+  name = "rds_jdbc_connection"
+
+  physical_connection_requirements {
+    availability_zone      = local.rds_cluster_az
+    security_group_id_list = data.aws_rds_cluster.banks.db_subnet_group_name
+    subnet_id              = data.aws_subnet.subnet_id.id
+  }
+
+}
 
 ##################
 # Glue Job       #

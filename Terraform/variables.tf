@@ -4,7 +4,7 @@ variable "database_name" {
 }
 
 variable "jdbc_target_path" {
-  description = "The path of the jdbc target"
+  description = "The Glue crawler's jdbc target path"
   type = string
 }
 
@@ -13,7 +13,31 @@ variable "rds_cluster_identifier" {
   type = string
 }
 
+variable "db_instance_identifier" {
+  description = "RDS databse instance identifier"
+  type = string
+}
+
 variable "vpc_id" {
   description = "The id of the VPC to use"
+  type = string
+}
+
+variable "secrets_manager_secret_name" {
+  description = "The name of the secret in Secrets Manager"
+  type = string
+}
+
+variable "glue_catalog_db_name" {
+  description = "The database name in the Glue catalog"
+}
+
+variable "glue_crawler_name" {
+  description = "The Glue crawler name"
+  type = string
+}
+
+variable "s3_etl_bucket_name" {
+  description = "The name of the S3 bucket where scripts and data is stored"
   type = string
 }
