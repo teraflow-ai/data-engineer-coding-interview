@@ -14,7 +14,7 @@ data "aws_availability_zones" "rds_cluster_az" {
 #############################
 # VPC info
 #############################
-data "aws_vpc" "vpc_banks"{
+data "aws_vpc" "vpc_banks" {
   id = var.vpc_id
 }
 
@@ -43,8 +43,8 @@ data "aws_db_instance" "banks" {
 }
 
 data "aws_db_subnet_group" "database" {
-    name = data.aws_db_instance.banks.db_subnet_group
-  }
+  name = data.aws_db_instance.banks.db_subnet_group
+}
 
 # Secrets Manager Secrets
 data "aws_secretsmanager_secret" "by_name_rds_credentials" {

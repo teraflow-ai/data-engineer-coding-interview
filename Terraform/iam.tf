@@ -14,7 +14,7 @@ resource "aws_iam_policy" "glue-access-to-aws-services" {
           "secretsmanager:ListSecretVersionIds"
         ]
         Effect = "Allow"
-# TODO       Resource = "arn:aws:secretsmanager:*:${data.aws_caller_identity.current.account_id}:secret:${secrets_manager_secret_name}"
+        # TODO       Resource = "arn:aws:secretsmanager:*:${data.aws_caller_identity.current.account_id}:secret:${secrets_manager_secret_name}"
         Resource = "*"
       },
       {
