@@ -10,7 +10,3 @@ locals {
   rds_az_subnets = [ for v in local.rds_subnet_ids : v if v.availability_zone == local.rds_cluster_az && v.map_public_ip_on_launch==false]
   rds_primary_subnet = local.rds_az_subnets[0].id
 }
-
-#jdbc:postgresql://xxx-cluster.cluster-xxx.us-east-1.rds.amazonaws.com:5432/employee
-#jdbc:postgresql://database-1.calyd5vpf4qr.eu-west-1.rds.amazonaws.com:5432/postgres
-#jdbc:postgresql://database-2.cluster-calyd5vpf4qr.eu-west-1.rds.amazonaws.com/postgres
