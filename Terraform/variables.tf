@@ -32,7 +32,13 @@ variable "glue_crawler_name" {
   type = string
 }
 
+variable "glue_ssl_cert_s3_location" {
+  description = "The SSL certificate the Glue connection must use when communicating with the RDS database"
+  type = string
+}
+
 variable "s3_etl_bucket_name" {
   description = "The name of the S3 bucket where scripts and data is stored"
   type = string
 }
+

@@ -33,7 +33,7 @@ resource "aws_iam_policy" "glue-service-linked-role-policy" {
 }
 
 resource "aws_iam_policy" "glue-rds-iam-connect-policy" {
-  name        = "glue_service_linked_role_permissions"
+  name        = "rds_glue_service_linked_role_permissions"
   path        = "/"
   description = "Policy allowing a user RDS access via IAM"
 
@@ -69,8 +69,8 @@ resource "aws_iam_role" "glue-service-linked-role" {
   })
 }
 
-resource "aws_iam_policy_attachment" "glue_service_linked_role_policy_attach" {
-  name       = aws_iam_role.glue-service-linked-role.name
+resource "aws_iam_role_policy_attachment" "glue_service_linked_role_policy_attach" {
+  role       = aws_iam_role.glue-service-linked-role.name
   policy_arn = aws_iam_policy.glue-service-linked-role-policy.arn
 }
 
@@ -81,4 +81,9 @@ resource "aws_iam_user" "rds_user" {
 resource "aws_iam_user_policy_attachment" "rds_user_iam_access" {
   policy_arn = aws_iam_policy.glue-rds-iam-connect-policy.arn
   user       = aws_iam_user.rds_user.name
+}
+
+resource "aws_iam_role_policy_attachment" "aws-glue-service-role-policy" {
+  role       = aws_iam_role.glue-service-linked-role.name
+  policy_arn = "arn:aws:iam::aws:policy/service-role/AWSGlueServiceRole"
 }
