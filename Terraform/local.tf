@@ -7,6 +7,6 @@ locals {
 
   # Find the private Subnet linked to the AZ where the DB instance is running from
   rds_subnet_ids = data.aws_subnet.rds_primary_subnet
-  rds_az_subnets = [ for v in local.rds_subnet_ids : v if v.availability_zone == local.rds_cluster_az && v.map_public_ip_on_launch==false]
+  rds_az_subnets = [ for v in local.rds_subnet_ids : v if v.availability_zone == local.rds_cluster_az && v.map_public_ip_on_launch==true]
   rds_primary_subnet = local.rds_az_subnets[0].id
 }
