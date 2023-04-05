@@ -1,6 +1,6 @@
 # Create service role to allow Glue to access RDS
-resource "aws_iam_policy" "glue-service-linked-role-policy" {
-  name        = "glue_service_linked_role_permissions"
+resource "aws_iam_policy" "glue-access-to-aws-services" {
+  name        = "glue_access_to_aws_services"
   path        = "/"
   description = "Policy used by Glue Service-linked role to access RDS, S3 and Secrets Manager"
 
@@ -52,6 +52,7 @@ resource "aws_iam_policy" "glue-rds-iam-connect-policy" {
 }
 
 resource "aws_iam_role" "glue-service-linked-role" {
+
   name = "glue-service-linked-role"
 
   assume_role_policy = jsonencode({
@@ -71,7 +72,7 @@ resource "aws_iam_role" "glue-service-linked-role" {
 
 resource "aws_iam_role_policy_attachment" "glue_service_linked_role_policy_attach" {
   role       = aws_iam_role.glue-service-linked-role.name
-  policy_arn = aws_iam_policy.glue-service-linked-role-policy.arn
+  policy_arn = aws_iam_policy.glue-access-to-aws-services.arn
 }
 
 resource "aws_iam_user" "rds_user" {
