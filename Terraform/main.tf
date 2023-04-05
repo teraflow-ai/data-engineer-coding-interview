@@ -44,7 +44,7 @@ resource "aws_glue_connection" "rds_jdbc_connection" {
 
   physical_connection_requirements {
     availability_zone      = local.rds_cluster_az
-    security_group_id_list = data.aws_db_instance.banks.db_security_groups
+    security_group_id_list = data.aws_db_instance.banks.vpc_security_groups
     subnet_id                 = local.rds_primary_subnet
   }
 
