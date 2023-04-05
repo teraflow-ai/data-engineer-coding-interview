@@ -8,11 +8,6 @@ variable "jdbc_target_path" {
   type = string
 }
 
-variable "rds_cluster_identifier" {
-  description = "The RDS Cluster identifier"
-  type = string
-}
-
 variable "db_instance_identifier" {
   description = "RDS databse instance identifier"
   type = string

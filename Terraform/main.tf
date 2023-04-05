@@ -8,16 +8,16 @@ resource "aws_glue_catalog_database" "banks_catalog_database" {
 ##################
 # Glue Crawler   #
 ##################
-resource "aws_glue_crawler" "monthly_loan_amounts" {
-  database_name = var.database_name
-  name          = var.glue_crawler_name
-  role          = aws_iam_role.glue-service-linked-role.arn
-
-  jdbc_target {
-    connection_name = aws_glue_connection.rds_jdbc_connection.name
-    path            = var.jdbc_target_path
-  }
-}
+#resource "aws_glue_crawler" "monthly_loan_amounts" {
+#  database_name = var.database_name
+#  name          = var.glue_crawler_name
+#  role          = aws_iam_role.glue-service-linked-role.arn
+#
+#  jdbc_target {
+#    connection_name = aws_glue_connection.rds_jdbc_connection.name
+#    path            = var.jdbc_target_path
+#  }
+#}
 
 ##########################
 # Glue JDBC Connection   #
@@ -27,6 +27,10 @@ resource "aws_glue_connection" "rds_jdbc_connection" {
     JDBC_CONNECTION_URL = local.rds_jdbc_url
     PASSWORD            = local.rds_pwd
     USERNAME            = local.rds_username
+    JDBC_ENFORCE_SSL    = true
+    CUSTOM_JDBC_CERT    = "s3://milliondolla-dl/rds-ca-2019-eu-west-1.pem"
+    SKIP_CUSTOM_JDBC_CERT_VALIDATION = true
+    CUSTOM_JDBC_CERT_STRING = "Amazon RDS eu-west-1 2019 CA"
   }
 
   description = "Glue JDBC connection"
@@ -35,11 +39,13 @@ resource "aws_glue_connection" "rds_jdbc_connection" {
 
   physical_connection_requirements {
     availability_zone      = local.rds_cluster_az
-    security_group_id_list = data.aws_rds_cluster.banks.db_subnet_group_name
-    subnet_id              = data.aws_subnet.subnet_id.id
+    security_group_id_list = data.aws_db_instance.banks.db_security_groups
+    subnet_id                 = local.rds_primary_subnet
   }
 
 }
+
+#resource "aws_glue_" "" {}
 
 ##################
 # Glue Job       #

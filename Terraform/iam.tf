@@ -14,7 +14,8 @@ resource "aws_iam_policy" "glue-service-linked-role-policy" {
           "secretsmanager:ListSecretVersionIds"
         ]
         Effect = "Allow"
-        Resource = "arn:aws:secretsmanager:*:${data.aws_caller_identity.current.account_id}:secret:${secrets_manager_secret_name}"
+# TODO       Resource = "arn:aws:secretsmanager:*:${data.aws_caller_identity.current.account_id}:secret:${secrets_manager_secret_name}"
+        Resource = "*"
       },
       {
         Action = [
