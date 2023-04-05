@@ -1,4 +1,6 @@
+###############################################################
 # Info on the AWS account where the resources will be created
+###############################################################
 data "aws_caller_identity" "current" {}
 
 #############################
@@ -19,34 +21,36 @@ data "aws_vpc" "vpc_banks" {
 }
 
 
-
+##########################################
 # List the subnets for a given vpc_id
-data "aws_subnets" "rds_cluster_subnets" {
+##########################################
+data "aws_subnets" "vpc_subnets" {
   filter {
     name   = "vpc-id"
     values = [var.vpc_id]
   }
 }
 
-data "aws_subnet" "rds_primary_subnet" {
-
-  for_each = toset(data.aws_subnets.rds_cluster_subnets.ids)
+data "aws_subnet" "vpc_subnet" {
+  for_each = toset(data.aws_subnets.vpc_subnets.ids)
   id       = each.value
-
 }
 
 
-################################################################
-# lookup RDS database aws_db_instance
+######################################################
+# lookup RDS database aws_db_instance and its config
+######################################################
 data "aws_db_instance" "banks" {
   db_instance_identifier = var.db_instance_identifier
 }
 
-data "aws_db_subnet_group" "database" {
+data "aws_db_subnet_group" "banks" {
   name = data.aws_db_instance.banks.db_subnet_group
 }
 
+############################
 # Secrets Manager Secrets
+############################
 data "aws_secretsmanager_secret" "by_name_rds_credentials" {
   name = var.secrets_manager_secret_name
 }
