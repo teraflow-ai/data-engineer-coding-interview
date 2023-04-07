@@ -68,4 +68,12 @@ resource "aws_glue_connection" "rds_jdbc_connection" {
 ##################
 # Glue Job       #
 ##################
+resource "aws_glue_job" "banks_3_month_moving_avg" {
+  name     = "banks_3_month_moving_avg"
+  role_arn = aws_iam_role.glue_service_linked_role.arn
+
+  command {
+    script_location = "s3://${var.glue_etl_bucket_name}${var.glue_etl_script_obj_key}"
+  }
+}
 

@@ -42,6 +42,6 @@ variable "glue_etl_bucket_name" {
   type        = string
 }
 
-variable "glue_etl_script_name" {
+variable "glue_etl_script_obj_key" {
   description = "The pyspark ETL script to perform the aggregation of the data"
 }
