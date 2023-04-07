@@ -149,7 +149,7 @@ resource "aws_iam_policy" "glue_etl_access" {
               "logs:PutLogEvents"
             ]
             Resource = [
-              "arn:aws:logs:*:*:/aws-glue/*"
+              "arn:aws:logs:*:*:/aws-glue-etl-${var.db_instance_identifier}-${var.db_name}/*"
             ]
           },
           {
