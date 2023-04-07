@@ -26,8 +26,8 @@ resource "aws_iam_policy" "glue-access-to-aws-services" {
         ]
         Effect = "Allow"
         Resource = [
-          "arn:aws:s3:::${var.s3_etl_bucket_name}/",
-          "arn:aws:s3:::${var.s3_etl_bucket_name}/*"
+          "arn:aws:s3:::${var.glue_etl_bucket_name}/",
+          "arn:aws:s3:::${var.glue_etl_bucket_name}/*"
         ]
       }
     ]

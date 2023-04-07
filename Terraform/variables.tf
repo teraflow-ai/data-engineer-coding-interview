@@ -1,10 +1,10 @@
-variable "database_name" {
+variable "db_name" {
   description = "The RDS database name"
   type        = string
 }
 
-variable "jdbc_target_path" {
-  description = "The Glue crawler's jdbc target path"
+variable "db_schema_name" {
+  description = "The schema to use within the RDS database"
   type        = string
 }
 
@@ -37,7 +37,7 @@ variable "glue_ssl_cert_s3_location" {
   type        = string
 }
 
-variable "s3_etl_bucket_name" {
+variable "glue_etl_bucket_name" {
   description = "The name of the S3 bucket where scripts and data is stored"
   type        = string
 }

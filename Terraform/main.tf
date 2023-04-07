@@ -9,13 +9,28 @@ resource "aws_glue_catalog_database" "banks_catalog_database" {
 # Glue Crawler   #
 ##################
 resource "aws_glue_crawler" "monthly_loan_amounts" {
-  database_name = var.database_name
+  database_name = var.db_name
   name          = var.glue_crawler_name
   role          = aws_iam_role.glue-service-linked-role.arn
 
   jdbc_target {
     connection_name = aws_glue_connection.rds_jdbc_connection.name
-    path            = var.jdbc_target_path
+    path            = "${var.db_schema_name}/${var.db_name}/Account"
+  }
+
+  jdbc_target {
+    connection_name = aws_glue_connection.rds_jdbc_connection.name
+    path            = "${var.db_schema_name}/${var.db_name}/Branch"
+  }
+
+  jdbc_target {
+    connection_name = aws_glue_connection.rds_jdbc_connection.name
+    path            = "${var.db_schema_name}/${var.db_name}/Client"
+  }
+
+  jdbc_target {
+    connection_name = aws_glue_connection.rds_jdbc_connection.name
+    path            = "${var.db_schema_name}/${var.db_name}/Loans"
   }
 
   depends_on = [
