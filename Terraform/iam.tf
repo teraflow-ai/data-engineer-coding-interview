@@ -1,10 +1,10 @@
 #######################################################
-# Create service role to allow Glue to access RDS
+# IAM Policy to allow Secrets Manager access
 #######################################################
-resource "aws_iam_policy" "glue-access-to-aws-services" {
-  name        = "glue_access_to_aws_services"
+resource "aws_iam_policy" "glue_secrets_manager_access" {
+  name        = "glue_secrets_manager_access"
   path        = "/"
-  description = "Policy used by Glue Service-linked role to access RDS, S3 and Secrets Manager"
+  description = "Policy used by Glue to access Secrets Manager"
 
   policy = jsonencode({
     Version = "2012-10-17"
@@ -16,44 +16,36 @@ resource "aws_iam_policy" "glue-access-to-aws-services" {
           "secretsmanager:ListSecretVersionIds"
         ]
         Effect = "Allow"
-        # TODO       Resource = "arn:aws:secretsmanager:*:${data.aws_caller_identity.current.account_id}:secret:${secrets_manager_secret_name}"
-        Resource = "*"
-      },
-      {
-        Action = [
-          "s3:List*",
-          "s3:Get*"
-        ]
-        Effect = "Allow"
-        Resource = [
-          "arn:aws:s3:::${var.glue_etl_bucket_name}/",
-          "arn:aws:s3:::${var.glue_etl_bucket_name}/*"
-        ]
+        Resource = "arn:aws:secretsmanager:*:${data.aws_caller_identity.current.account_id}:secret:${var.secrets_manager_secret_name}*"
       }
     ]
   })
 }
 
-resource "aws_iam_policy" "glue-rds-iam-connection-policy" {
-  name        = "rds_glue_service_linked_role_permissions"
+#######################################################
+# IAM Policy to allow RDS access via IAM
+#######################################################
+resource "aws_iam_policy" "glue_rds_access" {
+  name        = "glue_rds_access"
   path        = "/"
-  description = "Policy allowing a user RDS access via IAM"
+  description = "Policy allowing a database user RDS access via IAM"
 
   policy = jsonencode({
     Version = "2012-10-17"
     Statement = [
       {
         Action = [
-          "rds-db:connect",
+          "rds-db:connect"
         ]
         Effect   = "Allow"
-        Resource = "arn:aws:rds-db:*:${data.aws_caller_identity.current.account_id}:dbuser:${data.aws_db_instance.banks.db_instance_identifier}/${local.rds_username}"
+#        Resource = "arn:aws:rds-db:*:${data.aws_caller_identity.current.account_id}:dbuser:${data.aws_db_instance.banks.db_instance_identifier}/${local.rds_username}"
+        Resource = "*"
       }
     ]
   })
 }
 
-resource "aws_iam_role" "glue-service-linked-role" {
+resource "aws_iam_role" "glue_service_linked_role" {
 
   name = "glue-service-linked-role"
 
@@ -69,26 +61,112 @@ resource "aws_iam_role" "glue-service-linked-role" {
         Principal = {
           Service = "glue.amazonaws.com"
         }
-      },
+      }
     ]
   })
 }
 
-resource "aws_iam_role_policy_attachment" "glue_service_linked_role_policy_attach" {
-  role       = aws_iam_role.glue-service-linked-role.name
-  policy_arn = aws_iam_policy.glue-access-to-aws-services.arn
-}
-
+#################################
+# Add postgres user as IAM user
+#################################
 resource "aws_iam_user" "rds_user" {
   name = local.rds_username
 }
 
-resource "aws_iam_user_policy_attachment" "rds_user_iam_access" {
-  policy_arn = aws_iam_policy.glue-rds-iam-connection-policy.arn
+######################################
+# Attach Secrets Manager permissions
+######################################
+resource "aws_iam_role_policy_attachment" "glue_secrets_manager_permission" {
+  role       = aws_iam_role.glue_service_linked_role.name
+  policy_arn = aws_iam_policy.glue_secrets_manager_access.arn
+}
+
+######################################
+# Attach RDS IAM permissions
+######################################
+resource "aws_iam_user_policy_attachment" "glue_rds_user_iam_access_permission" {
+  policy_arn = aws_iam_policy.glue_rds_access.arn
   user       = aws_iam_user.rds_user.name
 }
 
-resource "aws_iam_role_policy_attachment" "aws-glue-service-role-policy" {
-  role       = aws_iam_role.glue-service-linked-role.name
-  policy_arn = "arn:aws:iam::aws:policy/service-role/AWSGlueServiceRole"
+######################################
+# Attach RDS IAM permissions
+######################################
+resource "aws_iam_role_policy_attachment" "glue_aws_etl_service_permission" {
+  role       = aws_iam_role.glue_service_linked_role.name
+  policy_arn = aws_iam_policy.glue_etl_access.arn
+}
+
+#######################################
+# Glue Job permissions to perform ETL
+#######################################
+resource "aws_iam_policy" "glue_etl_access" {
+  name        = "glue_s3_etl_script_access"
+  path        = "/"
+  description = "Allow AWS Glue access to make API calls to s3, iam, cloudwatch, logs and ec2"
+
+  policy = jsonencode({
+      Version = "2012-10-17"
+      Statement = [
+          {
+            Effect = "Allow"
+            Action = [
+              "glue:*",
+              "s3:GetBucketLocation",
+              "s3:ListBucket",
+              "s3:ListAllMyBuckets",
+              "s3:GetBucketAcl",
+              "ec2:DescribeVpcEndpoints",
+              "ec2:DescribeRouteTables",
+              "ec2:CreateNetworkInterface",
+              "ec2:DeleteNetworkInterface",
+              "ec2:DescribeNetworkInterfaces",
+              "ec2:DescribeSecurityGroups",
+              "ec2:DescribeSubnets",
+              "ec2:DescribeVpcAttribute",
+              "iam:ListRolePolicies",
+              "iam:GetRole",
+              "iam:GetRolePolicy",
+              "cloudwatch:PutMetricData"
+            ]
+            Resource = [
+              "*"
+            ]
+          },
+          {
+            Effect = "Allow"
+            Action = [
+              "s3:GetObject",
+              "s3:PutObject",
+              "s3:DeleteObject"
+            ]
+            Resource = "arn:aws:s3:::${var.glue_etl_bucket_name}/*"
+          },
+          {
+            Effect = "Allow"
+            Action = [
+              "logs:CreateLogGroup",
+              "logs:CreateLogStream",
+              "logs:PutLogEvents"
+            ]
+            Resource = [
+              "arn:aws:logs:*:*:/aws-glue/*"
+            ]
+          },
+          {
+            Effect = "Allow"
+            Action= [
+              "ec2:CreateTags",
+              "ec2:DeleteTags"
+            ]
+
+            Resource = [
+              "arn:aws:ec2:*:*:network-interface/*",
+              "arn:aws:ec2:*:*:security-group/*",
+              "arn:aws:ec2:*:*:instance/*"
+            ]
+          }
+
+    ]
+  })
 }

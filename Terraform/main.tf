@@ -11,7 +11,7 @@ resource "aws_glue_catalog_database" "banks_catalog_database" {
 resource "aws_glue_crawler" "monthly_loan_amounts" {
   database_name = var.db_name
   name          = var.glue_crawler_name
-  role          = aws_iam_role.glue-service-linked-role.arn
+  role          = aws_iam_role.glue_service_linked_role.name
 
   jdbc_target {
     connection_name = aws_glue_connection.rds_jdbc_connection.name
@@ -64,8 +64,6 @@ resource "aws_glue_connection" "rds_jdbc_connection" {
   }
 
 }
-
-#resource "aws_glue_" "" {}
 
 ##################
 # Glue Job       #

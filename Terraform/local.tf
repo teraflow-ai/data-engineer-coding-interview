@@ -1,7 +1,7 @@
 locals {
 
   rds_cluster_az = data.aws_db_instance.banks.availability_zone
-  rds_jdbc_url   = "jdbc:postgresql://${data.aws_db_instance.banks.endpoint}/${var.database_name}"
+  rds_jdbc_url   = "jdbc:postgresql://${data.aws_db_instance.banks.endpoint}/${var.db_name}"
   rds_username   = jsondecode(data.aws_secretsmanager_secret_version.banks_credentials.secret_string)["username"]
   rds_pwd        = jsondecode(data.aws_secretsmanager_secret_version.banks_credentials.secret_string)["password"]
 
