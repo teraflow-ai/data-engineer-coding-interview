@@ -38,8 +38,7 @@ resource "aws_iam_policy" "glue_rds_access" {
           "rds-db:connect"
         ]
         Effect   = "Allow"
-#        Resource = "arn:aws:rds-db:*:${data.aws_caller_identity.current.account_id}:dbuser:${data.aws_db_instance.banks.db_instance_identifier}/${local.rds_username}"
-        Resource = "*"
+        Resource = "arn:aws:rds-db:*:${data.aws_caller_identity.current.account_id}:dbuser:${data.aws_db_instance.banks.db_instance_identifier}/${local.rds_username}"
       }
     ]
   })
