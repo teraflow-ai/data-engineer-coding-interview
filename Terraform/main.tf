@@ -75,5 +75,8 @@ resource "aws_glue_job" "banks_3_month_moving_avg" {
   command {
     script_location = "s3://${var.glue_etl_bucket_name}${var.glue_etl_script_obj_key}"
   }
+
+  glue_version = "3.0"
+
 }
 
