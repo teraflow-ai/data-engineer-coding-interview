@@ -3,7 +3,7 @@
 ![plot](./docs/teraflowai.drawio.png)
 
 ### Assumptions
-1) The RDS Aurora postgres cluster is deployed in a private of the VPC
+1) The RDS Aurora postgres cluster is deployed in a private subnet of the VPC
 2) Networking between the VPC and the AWS Glue service has been configured
    1) A S3 Gateway endpoint was used
    2) Security groups with self referencing inbound and outbound rules are setup
