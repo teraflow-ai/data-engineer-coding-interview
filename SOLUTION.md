@@ -15,4 +15,7 @@
 ### TODO
 1) Resolve SSL error between RDS and Glue. Using the bundled certs results in a host mismatch error in Glue
 2) Make use of AWS Glue job bookmark to perform incremental processing
-3) Derive a reusable Terraform module from this initial code base that could be used in other ETL pipelines 
+3) Make use of either Glue Workflow or Step functions for orchestration
+4) Add retry logic to cope with failure and become 'self healing'
+5) Add notifications & metrics
+6) Derive a reusable Terraform module from this initial code base that could be used in other ETL pipelines 
