@@ -10,6 +10,7 @@
    3) RDS is configured to enforce SSL communication between itself and clients
 3) The database user credentials are stored in the AWS Secrets Manager service so that credentials are not hardcoded in the Terraform code and risk being exposed from the Github repo
 4) All other AWS infrastructure that is not part of the RDS service is deployed in the same region as the RDS cluster. This POC uses the eu-west-1 region. Change the default region in the `provider.tf`
+5) The s3 bucket already exist
 
 
 ### TODO
