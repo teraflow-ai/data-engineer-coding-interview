@@ -20,3 +20,4 @@
 5) Add notifications & metrics
 6) Derive a reusable Terraform module from this initial code base that could be used in other ETL pipelines
 7) Add trigger that will supply Glue DB and table name as well as S3 destination path
+8) Use appropriate amount of workers in the Glue Job definition

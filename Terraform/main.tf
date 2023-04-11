@@ -37,6 +37,15 @@ resource "aws_glue_crawler" "monthly_loan_amounts" {
     path = "s3://${var.glue_dl_bucket_name}${var.glue_dl_branch_montly_loan_totals_key}/"
   }
 
+  configuration = <<EOF
+{
+  "Version":1.0,
+  "Grouping": {
+    "TableGroupingPolicy": "CombineCompatibleSchemas"
+  }
+}
+EOF
+
   depends_on = [
     aws_glue_connection.rds_jdbc_connection,
     aws_glue_catalog_database.banks_catalog_database
