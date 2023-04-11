@@ -18,4 +18,5 @@
 3) Make use of either Glue Workflow or Step functions for orchestration
 4) Add retry logic to cope with failure and become 'self healing'
 5) Add notifications & metrics
-6) Derive a reusable Terraform module from this initial code base that could be used in other ETL pipelines 
+6) Derive a reusable Terraform module from this initial code base that could be used in other ETL pipelines
+7) Add trigger that will supply Glue DB and table name as well as S3 destination path

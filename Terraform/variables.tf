@@ -44,4 +44,15 @@ variable "glue_etl_bucket_name" {
 
 variable "glue_etl_script_obj_key" {
   description = "The pyspark ETL script to perform the aggregation of the data"
+  type        = string
+}
+
+variable "glue_dl_bucket_name" {
+  description = "The Data lake bucket where data is stored"
+  type        = string
+}
+
+variable "glue_dl_branch_montly_loan_totals_key" {
+  description = "The path where branch monthly loan totals are stored"
+  type        = string
 }

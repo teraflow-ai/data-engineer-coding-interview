@@ -33,6 +33,10 @@ resource "aws_glue_crawler" "monthly_loan_amounts" {
     path            = "${var.db_schema_name}/${var.db_name}/Loans"
   }
 
+  s3_target {
+    path = "s3://${var.glue_dl_bucket_name}${var.glue_dl_branch_montly_loan_totals_key}/"
+  }
+
   depends_on = [
     aws_glue_connection.rds_jdbc_connection,
     aws_glue_catalog_database.banks_catalog_database
