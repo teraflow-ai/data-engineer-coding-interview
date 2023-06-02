@@ -41,7 +41,7 @@ resource "aws_glue_catalog_database" "banking_database" {
 # Default port for postgres is 5432
 resource "aws_glue_crawler" "database_crawler" {
   name              = "database_crawler"
-  role              = aws_iam_role.glue_crawler_role.name
+  role              = aws_iam_role.glue_service_role.name
   database_name     = aws_glue_catalog_database.banking_database.name
   targets {
     jdbc_targets {
@@ -129,7 +129,7 @@ resource "aws_sns_topic_subscription" "email_subscription" {
 
 resource "aws_glue_job" "my_job" {
   name           = "my_job"
-  role           = aws_iam_role.glue_service_role.arn
+  role_arn       = aws_iam_role.glue_service_role.arn
   glue_version   = "3.0"
   command {
     python_version  = "3"
