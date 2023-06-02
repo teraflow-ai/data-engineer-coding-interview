@@ -41,16 +41,13 @@ resource "aws_glue_catalog_database" "banking_database" {
 # Default port for postgres is 5432
 resource "aws_glue_crawler" "database_crawler" {
   name              = "database_crawler"
-  role              = aws_iam_role.glue_service_role.name
+  role              = aws_iam_role.glue_service_role.arn
   database_name     = aws_glue_catalog_database.banking_database.name
-  targets {
-    jdbc_targets {
-      connection_string = "jdbc:postgresql://${local.creds.db_host}:5432/${local.creds.db_name}"
-      jdbc_username    = local.creds.db_username
-      jdbc_password    = local.creds.db_password
-      path             = ""
-      exclusions       = []
-    }
+  
+  jdbc_targets {
+    connection_name = local.creds.db_connecction_name
+    path             = ""
+    exclusions       = []
   }
 }
 
@@ -143,7 +140,7 @@ resource "aws_glue_job" "my_job" {
 }
 
 resource "aws_glue_trigger" "trigger_1" {
-  name = "monthly run"
+  name = "monthly_run"
   type = "SCHEDULED"
 
   actions {
@@ -152,7 +149,6 @@ resource "aws_glue_trigger" "trigger_1" {
 
   # Schedule job for the first day of the month
   schedule = "cron(0 0 1 * ? *)"
-  state    = "ENABLED"
 }
 
 resource "aws_glue_trigger" "trigger_2" {
@@ -163,13 +159,10 @@ resource "aws_glue_trigger" "trigger_2" {
     job_name = aws_glue_job.my_job.name
   }
 
-  triggers {
-    type = "CONDITIONAL"
-    predicate {
-      logical = "AND"
-      conditions {
-        job_run_state = "FAILED"
-      }
+  predicate {
+    conditions {
+      job_name = aws_glue_job.my_job.name
+      state    = "FAILED"
     }
   }
 }
