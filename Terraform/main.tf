@@ -39,9 +39,9 @@ resource "aws_glue_catalog_database" "banking_database" {
 ##################
 
 # Default port for postgres is 5432
-resource "aws_glue_catalog_crawler" "database_crawler" {
+resource "aws_glue_crawler" "database_crawler" {
   name              = "database_crawler"
-  role              = aws_iam_role.glue_crawler_role.arn
+  role              = aws_iam_role.glue_crawler_role.name
   database_name     = aws_glue_catalog_database.banking_database.name
   targets {
     jdbc_targets {
@@ -87,14 +87,12 @@ resource "aws_s3_bucket" "output_bucket" {
 }
 
 # S3 encrption
-resource "aws_s3_bucket_encryption" "bucket_encryption" {
+resource "aws_s3_bucket_server_side_encryption_configuration" "bucket_encryption" {
   bucket = aws_s3_bucket.output_bucket.id
 
-  server_side_encryption_configuration {
-    rule {
-      apply_server_side_encryption_by_default {
-        sse_algorithm = "AES256"
-      }
+  rule {
+    apply_server_side_encryption_by_default {
+      sse_algorithm = "AES256"
     }
   }
 }
@@ -142,15 +140,31 @@ resource "aws_glue_job" "my_job" {
     "--enable-auto-scaling"              = "true"
   }
 
-  # Schedule job for first day of the month
-  schedule {
-    schedule_expression = "cron(0 0 1 * ? *)"
-    state               = "ENABLED"
+}
+
+resource "aws_glue_trigger" "trigger_1" {
+  name = "monthly run"
+  type = "SCHEDULED"
+
+  actions {
+    job_name = aws_glue_job.my_job.name
   }
 
-  # CloudWatch trigger for failed job 
+  # Schedule job for the first day of the month
+  schedule = "cron(0 0 1 * ? *)"
+  state    = "ENABLED"
+}
+
+resource "aws_glue_trigger" "trigger_2" {
+  name = "fail_job"
+  type = "CONDITIONAL"
+
+  actions {
+    job_name = aws_glue_job.my_job.name
+  }
+
   triggers {
-    type             = "CONDITIONAL"
+    type = "CONDITIONAL"
     predicate {
       logical = "AND"
       conditions {
