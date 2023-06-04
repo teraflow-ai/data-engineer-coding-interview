@@ -44,7 +44,7 @@ resource "aws_glue_crawler" "database_crawler" {
   role              = aws_iam_role.glue_service_role.arn
   database_name     = aws_glue_catalog_database.banking_database.name
   
-  jdbc_targets {
+  jdbc_target {
     connection_name = local.creds.db_connecction_name
     path             = ""
     exclusions       = []
