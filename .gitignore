@@ -1,0 +1,33 @@
+# ignore all hidden files and folders
+.*
+*.log
+
+# Ignore override files as they are usually used to override resources locally and so
+# are not checked in
+override.tf
+override.tf.json
+*_override.tf
+*_override.tf.json
+
+# git
+!.gitignore
+!.gitattributes
+!.github/
+!.gitkeep
+!.vscode/
+!.editorconfig
+
+# terraform
+*.tfstate
+*.tfstate.*
+!.tflint.hcl
+!.terraform-docs.yaml
+!.terraformignore
+*.tfplan*
+!.terraform.lock.hcl
+
+# Other
+/.vscode
+.python-version
+*.DS_Store
+
