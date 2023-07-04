@@ -1,8 +1,8 @@
 # senior-data-engineer-coding-interview
 
-In Git, please create a fork of this repo, using your name and surname as the feature branch name.
+In Git, please create a `feature/` branch, off of the `development` branch, using your name and surname as the branch name.
 
-Submit a pull request into the parent repository once you're done coding.
+Submit a pull request into the `development` branch once you're done coding.
 
 # Problem Statement
 
