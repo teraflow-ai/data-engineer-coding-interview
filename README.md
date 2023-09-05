@@ -17,7 +17,8 @@ mycluster.cluster-123456789012.us-east-1.rds.amazonaws.com
 (Please use the default postgres port to connect)
 username: `postgres`
 password: `5Y67bg#r#`
-Note: Unfortunately this cluster no longer runs, so it's connection and the resulting use of data will need to be theoretical. Get those imaginations warmed up! And don't worry, we are not as concerned with detailed correctness as we are with understanding HOW you code and think about the problem.
+
+Note: Unfortunately this cluster no longer runs, so it's connection and the resulting use of data will need to be theoretical. Get those imaginations warmed up! And don't worry, we are not concerned with detailed correctness. We want to have an understanding of HOW you code and think about the problem. :)
 
 Given the following data model:
 
